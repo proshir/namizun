@@ -1,16 +1,25 @@
+import os
+from shutil import copyfile
+
 from namizun_core import database
+from namizun_core.paths import bundled_range_ips_path, get_namizun_home, range_ips_path
 from namizun_menu import udp_submenu, display, network_submenu
 from namizun_core.network import get_size
-from os import system, path
+from os import path
 
 
 def reload_namizun_service():
-    if path.isfile('/var/www/namizun/range_ips'):
-        database.set_parameter('range_ips', open('/var/www/namizun/range_ips').read())
+    dest = range_ips_path()
+    if path.isfile(dest):
+        with open(dest, encoding='UTF-8') as f:
+            database.set_parameter('range_ips', f.read())
     else:
-        system('cp /var/www/namizun/else/range_ips /var/www/namizun/range_ips')
-        database.set_parameter('range_ips', open('/var/www/namizun/range_ips').read())
-    system('systemctl restart namizun.service')
+        bundled = bundled_range_ips_path()
+        os.makedirs(get_namizun_home(), exist_ok=True)
+        copyfile(bundled, dest)
+        with open(dest, encoding='UTF-8') as f:
+            database.set_parameter('range_ips', f.read())
+    os.system('systemctl restart namizun.service')
 
 
 def menu():

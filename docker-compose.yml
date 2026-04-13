@@ -9,6 +9,10 @@ services:
     image: s4l3h1/namizun:ubuntu-20.04
     build: .
     network_mode: host
+    environment:
+      NAMIZUN_HOME: /var/www/namizun
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: '6379'
   uploader:
     <<: *ref
     restart: always

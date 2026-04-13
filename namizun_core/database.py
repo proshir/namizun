@@ -1,6 +1,10 @@
+import os
 from redis import Redis
-from os import system, path
+from os import path
 from random import randint
+from shutil import copyfile
+
+from namizun_core.paths import bundled_range_ips_path, get_namizun_home, range_ips_path
 
 parameters = [
     'fake_udp_uploader_running',
@@ -17,17 +21,30 @@ buffers_weight = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 def singleton():
     global namizun_db
     if namizun_db is None:
-        namizun_db = Redis()
+        namizun_db = Redis(
+            host=os.environ.get('REDIS_HOST', 'localhost'),
+            port=int(os.environ.get('REDIS_PORT', '6379')),
+            db=int(os.environ.get('REDIS_DB', '0')),
+        )
     return namizun_db
 
 
 def get_default(key):
     if key == 'range_ips':
-        if path.isfile('/var/www/namizun/range_ips'):
-            return open('/var/www/namizun/range_ips').read()
-        else:
-            system('cp /var/www/namizun/else/range_ips /var/www/namizun/')
-            return open('/var/www/namizun/range_ips').read()
+        dest = range_ips_path()
+        if path.isfile(dest):
+            with open(dest, encoding='UTF-8') as f:
+                return f.read()
+        bundled = bundled_range_ips_path()
+        if path.isfile(bundled):
+            os.makedirs(get_namizun_home(), exist_ok=True)
+            copyfile(bundled, dest)
+            with open(dest, encoding='UTF-8') as f:
+                return f.read()
+        raise RuntimeError(
+            f'Missing bundled range list at {bundled}. '
+            'Set NAMIZUN_HOME to the directory that contains else/range_ips.'
+        )
     elif key == 'fake_udp_uploader_running':
         return True
     elif key == 'coefficient_buffer_size':
