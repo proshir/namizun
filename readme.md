@@ -26,7 +26,7 @@ docker-compose build namizun
 ## One line installation command:
 
 ```bash
-sudo curl https://raw.githubusercontent.com/malkemit/namizun/master/else/setup.sh | sudo bash
+sudo curl https://raw.githubusercontent.com/proshir/namizun/refs/heads/master/else/setup.sh | sudo bash
 ```
 
 ## Manual installation
