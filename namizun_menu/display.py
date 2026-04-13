@@ -1,6 +1,10 @@
 from os import system
 from colored import fg
-from pyfiglet import Figlet
+
+try:
+    from pyfiglet import Figlet
+except ModuleNotFoundError:
+    Figlet = None
 
 cornsilk_color = fg("cornsilk_1")
 cyan_color = fg("cyan")
@@ -29,6 +33,9 @@ def line_jumper(lines):
 
 
 def banner():
-    custom_fig = Figlet(font='poison')
     clear_terminal()
+    if Figlet is None:
+        print(f"{gold_color}NAMIZUN{reset_color}")
+        return
+    custom_fig = Figlet(font='poison')
     print(f"{gold_color}{custom_fig.renderText('NAMIZUN')}{reset_color}")

@@ -21,10 +21,8 @@ fi
 echo "Creating namizun directory (step 2)"
 mkdir -p /var/www/namizun && cd /var/www/namizun
 
-echo 'Pulling the repository (step 3)'
-git init
-git remote add origin https://github.com/malkemit/namizun.git
-git pull origin master
+echo 'cloning the repository (step 3)'
+git clone https://github.com/proshir/namizun.git .
 if [ $? != 0 ]; then
   echo 'could not clone the repository'
   exit
@@ -37,7 +35,7 @@ if [ $? != 0 ]; then
 fi
 
 echo 'Installing project dependencies (step 5)'
-cd /var/www/namizun && source /var/www/namizun/venv/bin/activate && pip install wheel && pip install namizun_core/ namizun_menu/ && deactivate
+cd /var/www/namizun && source /var/www/namizun/venv/bin/activate && python -m pip install -r requirements.txt && python -m pip install --no-build-isolation ./namizun_core ./namizun_menu && deactivate
 if [ $? != 0 ]; then
   echo "Dependencies doesn't installed correctly"
   exit

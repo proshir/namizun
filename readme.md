@@ -54,15 +54,7 @@ mkdir -p /var/www/namizun && cd /var/www/namizun
 - 3\) Clone the project with Git:
 
 ```bash
-git init
-```
-
-```bash
-git remote add origin https://github.com/malkemit/namizun.git
-```
-
-```bash
-git pull origin master
+git clone https://github.com/proshir/namizun.git
 ```
 
 - 4\) make virtual environment:
@@ -71,10 +63,10 @@ git pull origin master
 python3 -m venv /var/www/namizun/venv
 ```
 
-- 5\) Install the project requirements with pip by **setup.py** (namizun_core & namizun_menu):
+- 5\) Install the project requirements:
 
 ```bash
-cd /var/www/namizun && source /var/www/namizun/venv/bin/activate && pip install wheel && pip install namizun_core/ namizun_menu/ && deactivate
+cd /var/www/namizun && source /var/www/namizun/venv/bin/activate && python -m pip install -r requirements.txt && python -m pip install --no-build-isolation ./namizun_core ./namizun_menu && deactivate
 ```
 
 - 6\) Create service for uploader.py (for running namizun script):
@@ -100,7 +92,7 @@ ln -s /var/www/namizun/else/namizun /usr/local/bin/ && chmod +x /usr/local/bin/n
 - With the following command, you can update the script that you have already installed:
 
 ```bash
-cd /var/www/namizun && git reset --hard HEAD && git pull origin master && source /var/www/namizun/venv/bin/activate && pip install namizun_core/ namizun_menu/ && deactivate && systemctl daemon-reload && chmod +x /usr/local/bin/namizun
+cd /var/www/namizun && git reset --hard HEAD && git pull origin master && source /var/www/namizun/venv/bin/activate && python -m pip install -r requirements.txt && python -m pip install --no-build-isolation ./namizun_core ./namizun_menu && deactivate && systemctl daemon-reload && chmod +x /usr/local/bin/namizun
 ```
 
 ## Configuration

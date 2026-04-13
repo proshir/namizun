@@ -3,3 +3,10 @@
 /venv
 range_ips
 namizun.log
+env
+.env
+.codex
+__pycache__/
+*.pyc
+build/
+*.egg-info/
