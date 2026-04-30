@@ -24,7 +24,7 @@ echo "Creating namizun directory (step 2)"
 mkdir -p "$APP_DIR" "$(dirname "$VENV_DIR")" && cd "$APP_DIR"
 
 echo 'cloning the repository (step 3)'
-git clone https://github.com/proshir/namizun.git .
+git clone https://github.com/proshir/namizun.git "$APP_DIR"
 if [ $? != 0 ]; then
   echo 'could not clone the repository'
   exit
