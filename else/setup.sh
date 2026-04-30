@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+APP_DIR=/var/www/namizun
+VENV_DIR=/opt/namizun/venv
 
 echo 'Install prerequisites (step 1)'
 apt update && apt install python3-pip python3-venv redis git -y
@@ -19,7 +21,7 @@ else
 fi
 
 echo "Creating namizun directory (step 2)"
-mkdir -p /var/www/namizun && cd /var/www/namizun
+mkdir -p "$APP_DIR" "$(dirname "$VENV_DIR")" && cd "$APP_DIR"
 
 echo 'cloning the repository (step 3)'
 git clone https://github.com/proshir/namizun.git .
@@ -29,20 +31,20 @@ if [ $? != 0 ]; then
 fi
 
 echo 'Create virtual env (step 4)'
-python3 -m venv /var/www/namizun/venv
+python3 -m venv "$VENV_DIR"
 if [ $? != 0 ]; then
   echo "VENV didn't created"
 fi
 
 echo 'Installing project dependencies (step 5)'
-cd /var/www/namizun && source /var/www/namizun/venv/bin/activate && python -m pip install -r requirements.txt && python -m pip install --no-build-isolation ./namizun_core ./namizun_menu && deactivate
+cd "$APP_DIR" && source "$VENV_DIR/bin/activate" && python -m pip install -r requirements.txt && python -m pip install --no-build-isolation ./namizun_core ./namizun_menu && deactivate
 if [ $? != 0 ]; then
   echo "Dependencies doesn't installed correctly"
   exit
 fi
 
 echo 'Create namizun service (step 6)'
-ln -s /var/www/namizun/else/namizun.service /etc/systemd/system/
+ln -s "$APP_DIR/else/namizun.service" /etc/systemd/system/
 if [ $? != 0 ]; then
   echo 'Creating service was failed'
   exit
@@ -58,7 +60,7 @@ if [ $? != 0 ]; then
 fi
 
 echo "make namizun as a command (step 8)"
-ln -s /var/www/namizun/else/namizun /usr/local/bin/ && chmod +x /usr/local/bin/namizun
+ln -s "$APP_DIR/else/namizun" /usr/local/bin/ && chmod +x /usr/local/bin/namizun
 if [ $? != 0 ]; then
   echo "failed to add namizun to PATH environment variables"
   exit
