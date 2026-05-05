@@ -26,8 +26,7 @@ def reboot_finder():
 
 def get_network_usage():
     upload, download = reboot_finder()
-    limitation = int(uniform(database.get_cache_parameter('coefficient_limitation') * 0.7,
-                             database.get_cache_parameter('coefficient_limitation') * 1.3))
+    limitation = database.get_cache_parameter('coefficient_limitation')
     difference = download * limitation - upload
     if difference < 1000000000:
         return 0
@@ -41,8 +40,8 @@ def get_uploader_count_base_timeline():
                                    1.3, 1.4, 1.6, 1.5, 1.3, 1.5, 1.7, 1.8, 2, 1.3, 1.5, 1.8]
     minimum_allowed_coefficient = [1.6, 1, 0.6, 0.2, 0, 0, 0.2, 0.8, 1, 1.1, 1.2, 1.3,
                                    1.1, 1.2, 1.5, 1.4, 1.2, 1.4, 1.5, 1.6, 1.8, 1, 1.2, 1.5]
-    return int(uniform(minimum_allowed_coefficient[time_in_iran] * default_uploader_count,
-                       maximum_allowed_coefficient[time_in_iran] * default_uploader_count))
+    return max(1, int(uniform(minimum_allowed_coefficient[time_in_iran] * default_uploader_count,
+                              maximum_allowed_coefficient[time_in_iran] * default_uploader_count)))
 
 
 store_restart_namizun_uploader_log()
@@ -54,11 +53,11 @@ while True:
         total_upload_size = remain_upload_size = get_network_usage()
         total_uploader = remain_uploader = get_uploader_count_base_timeline()
         store_new_upload_loop_log(total_uploader, total_upload_size)
-        while remain_uploader > 0 and remain_upload_size > 0.1 * total_upload_size:
-            uploader_count, upload_size_for_each_ip = multi_udp_uploader(0.3 * total_upload_size, total_uploader)
+        while remain_uploader > 0 and remain_upload_size > 0:
+            uploader_count, uploaded_size = multi_udp_uploader(0.3 * total_upload_size, total_uploader)
             if uploader_count == 0:
                 remain_uploader -= 1
             else:
                 remain_uploader -= uploader_count
-            remain_upload_size -= uploader_count * upload_size_for_each_ip
+            remain_upload_size -= uploaded_size
     sleep(randint(5, 30))

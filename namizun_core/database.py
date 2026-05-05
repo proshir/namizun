@@ -54,7 +54,7 @@ def get_default(key):
     elif key == 'coefficient_buffer_sending_speed':
         return 1
     elif key == 'coefficient_limitation':
-        return 6
+        return 10
     elif key == 'total_upload_cache':
         return 0
     elif key == 'total_download_cache':
